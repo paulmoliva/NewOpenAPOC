@@ -1,13 +1,14 @@
 import flask
 import os
 import json
-
-from sqlalchemy import and_
+from flask_cors import CORS
 
 from database import db
 from models import campaign, contribution, contributor
 
 application = flask.Flask(__name__)
+
+CORS(application)
 
 application.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_URL') or \
     'mysql+pymysql://cranklogic:cranklogic@127.0.0.1/openapoc'
@@ -43,19 +44,15 @@ def dump_campaign(campaign_id):
     )\
         .filter(
             contribution.Contribution.campaign_id == campaign_id
-    )\
-        .group_by(
-            contribution.Contribution.contributor_id, contribution.Contribution.Report_Year
-    )\
-        .all()
+    ).all()
     result = []
     for each_contribution in the_contributions:
         result.append({
             "id": each_contribution.id,
             "full_name": each_contribution.full_name,
-            "total_amount": each_contribution.amount,
+            "amount": each_contribution.amount,
             "Report_Year": each_contribution.Report_Year,
-            "contributor_id": each_contribution.van_id,
+            "contributor_id": each_contribution.contributor_id,
         })
     the_campaign = campaign.Campaign.query.get(campaign_id).as_dict()
     return json.dumps({'contributions': result, 'info': the_campaign})
@@ -79,3 +76,7 @@ def dump_contributor(contributor_id):
 def search_contributors():
     search_term = flask.request.args.get('search')
     return contributor.Contributor.find_by_name(search_term)
+
+
+if __name__ == '__main__':
+    application.run(debug=True)
