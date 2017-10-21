@@ -1,6 +1,8 @@
-from . import base_model
+from . import base_model, contributor
+from database import db
 
-class Campaign(db.Model, BaseModel):
+
+class Campaign(db.Model, base_model.BaseModel):
     __tablename__ = 'campaigns'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), index=True)
@@ -11,7 +13,7 @@ class Campaign(db.Model, BaseModel):
 
     def sum_contributor_score(self):
         print(self.name)
-        the_contributor = Contributor.query.filter(Contributor.full_name == (' ' + self.name)).first()
+        the_contributor = contributor.Contributor.query.filter(contributor.Contributor.full_name == (' ' + self.name)).first()
         if the_contributor:
             if the_contributor.get_score() > 500:
                 self.leans = 'l'

@@ -46,11 +46,8 @@ class Contributor(db.Model, base_model.BaseModel):
         return result
 
     @classmethod
-    def find_by_name(cls, search_term, order_by=None, form_submit=None):
-        if order_by:
-            order_attr = getattr(cls, order_by)
-        else:
-            order_attr = cls.full_name
+    def find_by_name(cls, search_term):
+        order_attr = cls.full_name
         or_statement = or_(
             cls.full_name.ilike('%{0}%'.format(search_term))
         )
@@ -62,5 +59,4 @@ class Contributor(db.Model, base_model.BaseModel):
                 "full_name": "No Results",
                 "score": '-1'
             })
-        final_array_to_return[0]['formSubmit'] = form_submit
         return json.dumps(final_array_to_return)
