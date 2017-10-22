@@ -47,7 +47,7 @@ class Contributor(db.Model, base_model.BaseModel):
 
     @classmethod
     def find_by_name(cls, search_term):
-        order_attr = cls.full_name
+        order_attr = cls.score
         or_statement = or_(
             cls.full_name.ilike('%{0}%'.format(search_term))
         )
