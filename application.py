@@ -53,6 +53,7 @@ def dump_campaign(campaign_id):
             "amount": each_contribution.amount,
             "Report_Year": each_contribution.Report_Year,
             "contributor_id": each_contribution.contributor_id,
+            "contributor_score": each_contribution.contributor_score,
         })
     the_campaign = campaign.Campaign.query.get(campaign_id).as_dict()
     return json.dumps({'contributions': result, 'info': the_campaign})
